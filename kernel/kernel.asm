@@ -48,8 +48,8 @@ _start:
 	mov		al,'K'
 	mov		[gs:((80 * 20 + 39) * 2)],ax
 
-	push	0xcef12
-	call	disp_int
+;	push	0xcef12
+;	call	disp_int
 
 	jmp		$
 

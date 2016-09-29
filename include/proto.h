@@ -8,6 +8,12 @@ PUBLIC void disp_str(char* info);
 PUBLIC void init8259A();
 PUBLIC void disp_color_str(char * info, int color);
 
-//klib.c
-//PUBLIC void disp_int(int num);
+// klib.c
+PUBLIC void disp_int(int num);
+
+// i8259.c
+PUBLIC void init_8259A();
+
+// protect.c
+PUBLIC void init_prot();
 #endif

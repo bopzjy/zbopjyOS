@@ -22,7 +22,9 @@ PUBLIC void cstart(){
 	u32* p_idt_base = (u32*)(&idt_ptr[2]);
 	*p_idt_limit = IDT_SIZE * sizeof(GATE) - 1;
 	*p_idt_base = (u32)&idt;
-	
+
+    init_prot();
+
     disp_str("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n-----test end-----\n");
 
 }
