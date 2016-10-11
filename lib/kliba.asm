@@ -3,15 +3,18 @@
 ;                              klib.asm
 ; ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
-[SECTION .data]
-disp_pos	dd	0
+; 导入全局变量
+extern	disp_pos
 
 [SECTION .text]
 
 ; 导出函数
 global	disp_str
 global	disp_color_str
+global	out_byte
+
+; 导出变量
+global	disp_pos
 
 ; ========================================================================
 ;                  void disp_str(char * info);

@@ -19,8 +19,8 @@ GdtPtr		dw		GdtLen - 1
 			dd		BaseOfLoaderPhyAddr + LABEL_GDT
 
 ; GDT 选择子
-SelectorFlatRW		equ		LABEL_DESC_FLAT_RW		- LABEL_GDT
 SelectorFlatC       equ     LABEL_DESC_FLAT_C       - LABEL_GDT
+SelectorFlatRW		equ		LABEL_DESC_FLAT_RW		- LABEL_GDT
 SelectorVideo		equ		LABEL_DESC_VIDEO		- LABEL_GDT
 
 

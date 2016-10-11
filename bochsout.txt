@@ -32,12 +32,12 @@
 00000000000i[     ]   SB16 support: no
 00000000000i[     ]   USB support: no
 00000000000i[     ]   VGA extension support: vbe 
-00000000000i[MEM0 ] allocated memory at 0x2b6817e79010. after alignment, vector=0x2b6817e7a000
+00000000000i[MEM0 ] allocated memory at 0x2b18c3fb4010. after alignment, vector=0x2b18c3fb5000
 00000000000i[MEM0 ] 32.00MB
 00000000000i[MEM0 ] rom at 0xfffe0000/131072 ('/usr/local/share/bochs/BIOS-bochs-latest')
 00000000000i[MEM0 ] rom at 0xc0000/38400 ('/usr/local/share/bochs/VGABIOS-lgpl-latest')
 00000000000i[CMOS ] Using local time for initial clock
-00000000000i[CMOS ] Setting initial clock to: Thu Sep  8 00:01:24 2016 (time0=1473267684)
+00000000000i[CMOS ] Setting initial clock to: Tue Oct  4 22:39:38 2016 (time0=1475595578)
 00000000000i[DMA  ] channel 4 used by cascade
 00000000000i[DMA  ] channel 2 used by Floppy Drive
 00000000000i[FDD  ] fd0: 'a.img' ro=0, h=2,t=80,spt=18
@@ -102,27 +102,28 @@
 00000720000i[XGUI ] charmap update. Font Height is 16
 00000800000i[XGUI ] charmap update. Font Height is 16
 00001088240i[BIOS ] Booting from 0000:7C00
-00002723169i[CPU  ] [2723169] Stopped on MAGIC BREAKPOINT
-108672009631i[     ] Ctrl-C detected in signal handler.
-108672009632i[     ] dbg: Quit
-108672009632i[CPU  ] protected mode
-108672009632i[CPU  ] CS.d_b = 32 bit
-108672009632i[CPU  ] SS.d_b = 32 bit
-108672009632i[CPU  ] | EAX=00030f00  EBX=000004a0  ECX=00000000  EDX=00000032
-108672009632i[CPU  ] | ESP=0003233c  EBP=00008094  ESI=00032324  EDI=00000dce
-108672009632i[CPU  ] | IOPL=0 id vip vif ac vm rf nt of df if tf sf ZF af PF cf
-108672009632i[CPU  ] | SEG selector     base    limit G D
-108672009632i[CPU  ] | SEG sltr(index|ti|rpl)     base    limit G D
-108672009632i[CPU  ] |  CS:0008( 0001| 0|  0) 00000000 0000ffff 1 1
-108672009632i[CPU  ] |  DS:0010( 0002| 0|  0) 00000000 0000ffff 1 1
-108672009632i[CPU  ] |  SS:0010( 0002| 0|  0) 00000000 0000ffff 1 1
-108672009632i[CPU  ] |  ES:0010( 0002| 0|  0) 00000000 0000ffff 1 1
-108672009632i[CPU  ] |  FS:0000( 0005| 0|  0) 00000000 0000ffff 0 0
-108672009632i[CPU  ] |  GS:0018( 0003| 0|  0) 000b8000 0000ffff 0 0
-108672009632i[CPU  ] | EIP=00030434 (00030434)
-108672009632i[CPU  ] | CR0=0x80000011 CR1=0 CR2=0x00000000
-108672009632i[CPU  ] | CR3=0x00200000 CR4=0x00000000
-108672009632i[CPU  ] >> jmp .+0xfffffffe (0x00030434) : EBFE
-108672009632i[CMOS ] Last time is 1473322020 (Thu Sep  8 15:07:00 2016)
-108672009632i[XGUI ] Exit.
-108672009632i[CTRL ] quit_sim called with exit code 0
+01213654859i[CPU  ] WARNING: HLT instruction with IF=0!
+26363865561000i[     ] Ctrl-C detected in signal handler.
+26363865561168e[CPU  ] CPU_LOOP bx_guard.interrupt_requested=1
+26363865561168i[     ] dbg: Quit
+26363865561168i[CPU  ] protected mode
+26363865561168i[CPU  ] CS.d_b = 32 bit
+26363865561168i[CPU  ] SS.d_b = 32 bit
+26363865561168i[CPU  ] | EAX=00030f00  EBX=000004a0  ECX=00000000  EDX=00000031
+26363865561168i[CPU  ] | ESP=00032aa8  EBP=00008094  ESI=00031181  EDI=00000e60
+26363865561168i[CPU  ] | IOPL=0 id vip vif ac vm rf nt of df if tf sf zf af PF cf
+26363865561168i[CPU  ] | SEG selector     base    limit G D
+26363865561168i[CPU  ] | SEG sltr(index|ti|rpl)     base    limit G D
+26363865561168i[CPU  ] |  CS:0008( 0001| 0|  0) 00000000 0000ffff 1 1
+26363865561168i[CPU  ] |  DS:0010( 0002| 0|  0) 00000000 0000ffff 1 1
+26363865561168i[CPU  ] |  SS:0010( 0002| 0|  0) 00000000 0000ffff 1 1
+26363865561168i[CPU  ] |  ES:0010( 0002| 0|  0) 00000000 0000ffff 1 1
+26363865561168i[CPU  ] |  FS:0000( 0005| 0|  0) 00000000 0000ffff 0 0
+26363865561168i[CPU  ] |  GS:0018( 0003| 0|  0) 000b8000 0000ffff 0 0
+26363865561168i[CPU  ] | EIP=00030531 (0003044b)
+26363865561168i[CPU  ] | CR0=0x80000011 CR1=0 CR2=0x00000000
+26363865561168i[CPU  ] | CR3=0x00200000 CR4=0x00000000
+26363865561168i[CPU  ] >> nop  : 90
+26363865561168i[CMOS ] Last time is 1488777510 (Mon Mar  6 12:18:30 2017)
+26363865561168i[XGUI ] Exit.
+26363865561168i[CTRL ] quit_sim called with exit code 0

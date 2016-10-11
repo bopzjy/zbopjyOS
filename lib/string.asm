@@ -14,7 +14,6 @@ memcpy:
 	mov		esi,[ebp + 12]
 	mov		edi,[ebp + 8]
 	cld		
-	xchg	bx,bx
 	rep		movsb
 
 	pop		edi
