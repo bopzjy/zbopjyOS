@@ -1,15 +1,24 @@
-SELECTOR_KERNEL_CS		equ		8
+nimabi
+%include "sconst.inc"
 
-;导入函数和变量
+;导入函数
 extern		cstart
-extern		gdt_ptr
-extern		idt_ptr
 extern		exception_handler
 extern		spurious_irq
 extern		kernel_main
+extern		disp_str
+
+; 导入变量
+extern		gdt_ptr
+extern		idt_ptr
+extern		p_proc_ready
+extern		tss
 
 ;debug
 extern		disp_int
+
+[section .data]
+clock_int_msg		db		"^", 0
 
 [section .bss]
 StackSpace		resb		2 * 1024
@@ -18,8 +27,10 @@ StackTop:					;栈顶
 [section .text]
 
 global	_start
-global	testHandler
 
+global	restart
+
+; 中断和异常处理函数
 global	divide_error
 global	single_step_exception
 global	nmi
@@ -72,7 +83,11 @@ csinit:
 
 	sti
 ;	hlt
-	
+
+	xor		eax,eax
+	mov		eax,SELECTOR_TSS
+	ltr		ax
+
 	jmp		kernel_main
 
 ; 中断和异常 -- 硬件中断
@@ -87,7 +102,42 @@ csinit:
 
 ALIGN   16
 hwint00:                ; Interrupt routine for irq 0 (the clock).
-        hwint_master    0
+	sub		esp, 4
+	; save the scene
+	pushad
+	push	ds
+	push	es
+	push	fs
+	push	gs
+	mov		dx, ss
+	mov		ds, dx
+	mov		es, dx
+
+	mov		esp, StackTop		; switch into kernel stack
+
+	inc		byte [gs:0]
+
+	; send EOI，renew i8259A
+	mov		al,EOI
+	out		INT_M_CTL, al
+
+	push	clock_int_msg
+	call	disp_str
+	add		esp, 4
+
+	mov		esp, [p_proc_ready]  ; leave kernel stack
+
+	lea		eax, [esp + P_STACKTOP]
+	mov		dword [tss + TSS3_S_SP0], eax
+
+	pop		gs
+	pop		fs
+	pop		es
+	pop		ds
+	popad
+	add		esp, 4
+
+	iretd
 
 ALIGN   16
 hwint01:                ; Interrupt routine for irq 1 (keyboard)
@@ -221,3 +271,19 @@ exception:
 	call	exception_handler
 	add	esp, 4*2	; 让栈顶指向 EIP，堆栈中从顶向下依次是：EIP、CS、EFLAGS
 	hlt
+
+restart:
+	mov		esp, [p_proc_ready]
+	mov		eax, [esp + P_LDT_SEL] 
+	lldt	[esp + P_LDT_SEL]
+	lea		eax, [esp + P_STACKTOP]
+	mov		dword [tss + TSS3_S_SP0], eax
+
+	pop		gs
+	pop		fs
+	pop		es
+	pop		ds
+	popad
+	add		esp,4
+
+	iretd
