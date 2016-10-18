@@ -3,6 +3,7 @@
 #include "protect.h"
 #include "proto.h"
 #include "proc.h"
+#include "string.h"
 #include "global.h"
 
 /* 本文件内函数声明 */                                               
@@ -207,20 +208,29 @@ PUBLIC void init_prot()
     init_idt_desc(INT_VECTOR_IRQ8 + 5,      DA_386IGate,
             hwint13,                  PRIVILEGE_KRNL);
  
-    init_idt_desc(INT_VECTOR_IRQ8 + 6,      DA_386IGate,
-            hwint14,                  PRIVILEGE_KRNL);
+    init_idt_desc(INT_VECTOR_IRQ8 + 6, DA_386IGate, hwint14, PRIVILEGE_KRNL);
  
-    init_idt_desc(INT_VECTOR_IRQ8 + 7,      DA_386IGate,
-            hwint15,                  PRIVILEGE_KRNL);
+    init_idt_desc(INT_VECTOR_IRQ8 + 7, DA_386IGate, hwint15, PRIVILEGE_KRNL);
 
     // 填充GDT中tss的描述符
     memset(&tss, 0, sizeof(tss));
     tss.ss0 = SELECTOR_KERNEL_DS;
     init_descriptor(&gdt[INDEX_TSS],
-            vir2phys(seg2phys(SELECTOR_KERNEL_DS), &tss),
-            sizeof(tss) - 1,
-            DA_386TSS);
+        vir2phys(seg2phys(SELECTOR_KERNEL_DS), &tss),
+        sizeof(tss) - 1,
+        DA_386TSS);
 
+    // 初始化GDT中的LDT的描述符
+    int i, index_ldt = INDEX_LDT_FIRST;
+    PROCESS* p_proc = proc_table;
+    for(i = 0; i<NR_TASKS; i++){
+        init_descriptor(&gdt[index_ldt],
+            vir2phys(seg2phys(SELECTOR_KERNEL_DS),p_proc->ldts),
+            LDT_SIZE * sizeof(DESCRIPTOR) - 1,
+            DA_LDT);
+        index_ldt++;
+        p_proc++;
+    }
 }
 
 PUBLIC u32 seg2phys(u16 seg){

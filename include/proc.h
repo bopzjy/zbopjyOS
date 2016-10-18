@@ -1,3 +1,4 @@
+
 typedef struct s_stackframe {
     u32 gs;         /* \                                    */
     u32 fs;         /* |                                    */
@@ -28,10 +29,24 @@ typedef struct s_proc {
     char p_name[16];           /* name of the process */
 }PROCESS;
 
+// 函数指针
+typedef void (*task_f) ();
+
+// 函数原型无所谓了，只要task的地址即可
+typedef struct s_task {
+    task_f initial_eip;
+    int stacksize;
+    char name[32];
+}TASK;
+
 // Number of tasks
-#define NR_TASKS    1
+#define NR_TASKS    3
 
-// stack of tasks
+// stacks of tasks
 #define STACK_SIZE_TESTA    0x8000
+#define STACK_SIZE_TESTB    0x8000
+#define STACK_SIZE_TESTC    0x8000
 
-#define STACK_SIZE_TOTAL    STACK_SIZE_TESTA
+#define STACK_SIZE_TOTAL    STACK_SIZE_TESTA + \
+    STACK_SIZE_TESTB + \
+    STACK_SIZE_TESTC

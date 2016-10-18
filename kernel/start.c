@@ -3,6 +3,7 @@
 #include "protect.h"
 #include "proto.h"
 #include "string.h"
+#include "proc.h"
 #include "global.h"
 
 PUBLIC void cstart(){
@@ -25,6 +26,6 @@ PUBLIC void cstart(){
 
     init_prot();
 
-    disp_str("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n-----test end-----\n");
+    disp_str("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n-----test end-----\n");
 
 }

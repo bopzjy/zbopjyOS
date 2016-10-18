@@ -17,3 +17,9 @@ EXTERN PROCESS*     p_proc_ready;
 // 进程表
 EXTERN PROCESS      proc_table[NR_TASKS];
 EXTERN char         task_stack[STACK_SIZE_TOTAL];
+
+extern TASK         task_table[NR_TASKS];
+
+
+// 避免中断重入
+EXTERN u32          k_reenter;

@@ -1,4 +1,3 @@
-nimabi
 %include "sconst.inc"
 
 ;导入函数
@@ -7,12 +6,15 @@ extern		exception_handler
 extern		spurious_irq
 extern		kernel_main
 extern		disp_str
+extern 		delay
+extern		clock_handler
 
 ; 导入变量
 extern		gdt_ptr
 extern		idt_ptr
 extern		p_proc_ready
 extern		tss
+extern		k_reenter
 
 ;debug
 extern		disp_int
@@ -113,22 +115,40 @@ hwint00:                ; Interrupt routine for irq 0 (the clock).
 	mov		ds, dx
 	mov		es, dx
 
-	mov		esp, StackTop		; switch into kernel stack
-
 	inc		byte [gs:0]
 
 	; send EOI，renew i8259A
 	mov		al,EOI
 	out		INT_M_CTL, al
 
-	push	clock_int_msg
-	call	disp_str
+	; 解决中断重入问题
+	inc		dword [k_reenter]
+	cmp		dword [k_reenter],0
+	jne		.re_enter
+
+	mov		esp, StackTop		; switch into kernel stack
+	
+	; 切换到内核栈时再打开中断，如果发生中断重入，压栈全压在内核栈中
+	sti
+
+	push	0
+	call	clock_handler
 	add		esp, 4
+
+	; 加入延迟
+	push	10
+	call	delay
+	add		esp,4
+
+	cli
 
 	mov		esp, [p_proc_ready]  ; leave kernel stack
 
 	lea		eax, [esp + P_STACKTOP]
 	mov		dword [tss + TSS3_S_SP0], eax
+
+.re_enter:
+	dec		dword [k_reenter]
 
 	pop		gs
 	pop		fs
@@ -273,6 +293,7 @@ exception:
 	hlt
 
 restart:
+	
 	mov		esp, [p_proc_ready]
 	mov		eax, [esp + P_LDT_SEL] 
 	lldt	[esp + P_LDT_SEL]
@@ -285,5 +306,5 @@ restart:
 	pop		ds
 	popad
 	add		esp,4
-
+	
 	iretd

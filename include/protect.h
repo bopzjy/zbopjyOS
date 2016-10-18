@@ -129,7 +129,7 @@ typedef struct s_tss {
 #define DA_CCOR         0x9E    /* 存在的可执行可读一致代码段属性值 */
 
 // 线性地址-->物理地址
-#define vir2phys(seg_base, vir) (u32)((u32)seg_base + (u32)vir)
+#define vir2phys(seg_base, vir) (u32)(((u32)seg_base) + (u32)(vir))
 
 #endif
 

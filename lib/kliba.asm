@@ -24,6 +24,7 @@ disp_str:
 	mov	ebp, esp
 
 	mov	esi, [ebp + 8]	; pszInfo
+	mov	al,[esi]
 	mov	edi, [disp_pos]
 	mov	ah, 0Fh
 .1:

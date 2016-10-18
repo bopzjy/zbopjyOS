@@ -113,15 +113,15 @@ LABEL_FINDED:
 
 ;	读取loader.bin完成
 LABEL_LOADER_FINISHED:
-    mov     ecx,16
-    mov     dword [dwDispPos],(80 * 14 + 0) * 2
-	mov		bx,OffsetOfLoader
-.loop: 
-    mov     al,[es:bx]
-    inc     bx
-    call    DispAL
-    add     dword [dwDispPos],2
-    loop    .loop
+;   mov     ecx,16
+;   mov     dword [dwDispPos],(80 * 14 + 0) * 2
+;	mov		bx,OffsetOfLoader
+;.loop: 
+;   mov     al,[es:bx]
+;   inc     bx
+;   call    DispAL
+;   add     dword [dwDispPos],2
+;   loop    .loop
 
 ;	打印"Ready"
 	mov		dh,1

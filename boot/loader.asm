@@ -140,15 +140,15 @@ LABEL_FINDED:
 ;	读取kernel.bin完成
 LABEL_LOADER_FINISHED:
 ;	打印了16 bytes 看是否真的加载了
-    mov     ecx,16
-    mov     dword [dwDispPosRM],(80 * 15 + 0) * 2
-	mov		bx,OffsetOfKernelFile
-.loop: 
-    mov     al,[es:bx]
-    inc     bx
-    call    DispALRealMode
-    add     dword [dwDispPosRM],2
-    loop    .loop
+;   mov     ecx,16
+;   mov     dword [dwDispPosRM],(80 * 15 + 0) * 2
+;	mov		bx,OffsetOfKernelFile
+;.loop: 
+;   mov     al,[es:bx]
+;   inc     bx
+;   call    DispALRealMode
+;   add     dword [dwDispPosRM],2
+;   loop    .loop
 
 	call	KillMotor
 
