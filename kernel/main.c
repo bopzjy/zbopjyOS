@@ -6,8 +6,6 @@
 #include "string.h"
 #include "global.h"
 
-hehedada
-
 PUBLIC int kernel_main(){
     disp_str("--------\"kernel_main\" begins--------\n");
 
@@ -43,10 +41,25 @@ PUBLIC int kernel_main(){
         selector_ldt += 8;
     }
 
-    k_reenter = -1;
+    k_reenter = 0;
 
+    ticks = 0;
+
+//    p_proc_ready    = proc_table;
     p_proc_ready    = proc_table;
-    //p_proc_ready    = &proc_table[1];
+
+    /* 初始化 8253 PIT, 该芯片每隔一定时间会输出一个信号，以便触发时钟中断*/
+    out_byte(TIMER_MODE, RATE_GENERATOR);
+    out_byte(TIMER0, (u8) (TIMER_FREQ/HZ) );
+    out_byte(TIMER0, (u8) ((TIMER_FREQ/HZ) >> 8));
+
+    proc_table[0].ticks = proc_table[0].priority = 15;
+    proc_table[1].ticks = proc_table[1].priority = 5;
+    proc_table[2].ticks = proc_table[2].priority = 3;
+ 
+    put_irq_handler(CLOCK_IRQ, clock_handler); /* 设定时钟中断处理程序 */  
+    enable_irq(CLOCK_IRQ);                     /* 让8259A可以接收时钟中断 */
+
     restart();
 
     while(1);
@@ -55,29 +68,23 @@ PUBLIC int kernel_main(){
 void TestA(){
     int i = 0;
     while(1){
-        disp_str("A");
-        disp_int(i++);
-        disp_str(".");
-        delay(1);
+        disp_str("A.");
+        milli_delay(10);
     }
 }
 
 void TestB(){
     int i = 0x100;
     while(1){
-        disp_str("B");
-        disp_int(i++);
-        disp_str(".");
-        delay(1);
+        disp_str("B.");
+        milli_delay(10);
     }
 }
 
 void TestC(){
     int i = 0x2000;
     while(1){
-        disp_str("C");
-        disp_int(i++);
-        disp_str(".");
-        delay(1);
+        disp_str("C.");
+        milli_delay(10);
     }
 }

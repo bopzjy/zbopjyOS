@@ -15,7 +15,6 @@ CC			= gcc
 LD			= ld
 ASMBFLAGS	= -I boot/include/
 ASMKFLAGS	= -I include/ -f elf
-NIMABI		= -f elf
 CFLAGS		= -I include/ -m32 -c -fno-stack-protector -fno-builtin
 LDFLAGS		= -s -Ttext $(ENTRYPOINT) -m elf_i386
 DASMFLAGS	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
@@ -23,7 +22,7 @@ DASMFLAGS	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 #target
 OSBOOT		= boot/boot.bin boot/loader.bin
 OSKERNEL	= kernel.bin
-OBJS		= kernel/global.o kernel/kernel.o kernel/start.o kernel/protect.o lib/kliba.o lib/string.o lib/klib.o kernel/i8259.o kernel/main.o kernel/clock.o
+OBJS		= kernel/global.o kernel/kernel.o kernel/start.o kernel/protect.o lib/kliba.o lib/string.o lib/klib.o kernel/i8259.o kernel/main.o kernel/clock.o kernel/proc.o lib/syscall.o
 DASMOUTPUT	= kernel.bin.asm
 
 # all phony targets
@@ -80,10 +79,14 @@ kernel/main.o: kernel/main.c include/const.h include/type.h include/protect.h \
 kernel/i8259.o: kernel/i8259.c include/const.h include/protect.h include/proto.h include/type.h
 	$(CC) $(CFLAGS) -o $@ $<
 
-kernel/clock.o: kernel/clock.c
+kernel/clock.o: kernel/clock.c include/type.h include/const.h include/protect.h \
+	 include/proc.h include/global.h include/proto.h
 	$(CC) $(CFLAGS) -o $@ $<
 
-lib/kliba.o : lib/kliba.asm
+lib/kliba.o : lib/kliba.asm include/sconst.inc
+	$(ASM) $(ASMKFLAGS) -o $@ $<
+
+lib/syscall.o : kernel/syscall.asm include/sconst.inc
 	$(ASM) $(ASMKFLAGS) -o $@ $<
 
 lib/string.o : lib/string.asm
@@ -97,7 +100,10 @@ kernel/protect.o: kernel/protect.c include/const.h include/type.h \
 	 include/string.h
 	$(CC) $(CFLAGS) -o $@ $<
 
-global.o: kernel/global.c include/type.h include/const.h \
+kernel/global.o: kernel/global.c include/type.h include/const.h \
 	 include/protect.h include/proto.h include/proc.h include/global.h
 	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/proc.o: kernel/proc.c include/type.h include/const.h include/string.h \
+	include/protect.h include/proto.h include/proc.h include/global.h
 

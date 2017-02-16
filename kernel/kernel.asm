@@ -7,7 +7,6 @@ extern		spurious_irq
 extern		kernel_main
 extern		disp_str
 extern 		delay
-extern		clock_handler
 
 ; 导入变量
 extern		gdt_ptr
@@ -15,6 +14,8 @@ extern		idt_ptr
 extern		p_proc_ready
 extern		tss
 extern		k_reenter
+extern		irq_table
+extern 		sys_call_table
 
 ;debug
 extern		disp_int
@@ -66,6 +67,9 @@ global  hwint13
 global  hwint14
 global  hwint15
 
+; 软中断，系统调用
+global	sys_call
+
 _start:
 	mov		esp, StackTop
 	sgdt	[gdt_ptr]		;把gdt_ptr导出到外部变量中，cstart()会用到
@@ -94,70 +98,35 @@ csinit:
 
 ; 中断和异常 -- 硬件中断
 ; ---------------------------------
-%macro  hwint_master    1
-        push    %1
-        call    spurious_irq
-        add     esp, 4
-        hlt
+%macro  hwint_master    1   
+    call    save
+
+    in  	al, INT_M_CTLMASK   ; `.
+    or  	al, (1 << %1)       ;  | 屏蔽当前中断
+    out 	INT_M_CTLMASK, al   ; / 
+
+    mov 	al, EOI         ; `. 置EOI位
+    out 	INT_M_CTL, al       ; / 
+
+    sti 	; CPU在响应中断的过程中会自动关中断，这句之后就允许响应新的中断
+    push    %1          ; `.
+    call    [irq_table + 4 * %1]    ;  | 中断处理程序
+    pop 	ecx         ; / 
+    cli 
+;	响应中断时EFLAGS压栈，中断处理结束后，iret指令会将EFLAGS弹出，此时IF=1，
+;	所以无需手动打开中断。在中断处理程序过程中打开中断，只是为了中断嵌套。
+
+    in  	al, INT_M_CTLMASK   ; `.
+    and 	al, ~(1 << %1)      ;  | 恢复接受当前中断
+    out 	INT_M_CTLMASK, al   ; / 
+
+    ret 
 %endmacro
-; ---------------------------------
 
 ALIGN   16
 hwint00:                ; Interrupt routine for irq 0 (the clock).
-	sub		esp, 4
-	; save the scene
-	pushad
-	push	ds
-	push	es
-	push	fs
-	push	gs
-	mov		dx, ss
-	mov		ds, dx
-	mov		es, dx
-
-	inc		byte [gs:0]
-
-	; send EOI，renew i8259A
-	mov		al,EOI
-	out		INT_M_CTL, al
-
-	; 解决中断重入问题
-	inc		dword [k_reenter]
-	cmp		dword [k_reenter],0
-	jne		.re_enter
-
-	mov		esp, StackTop		; switch into kernel stack
-	
-	; 切换到内核栈时再打开中断，如果发生中断重入，压栈全压在内核栈中
-	sti
-
-	push	0
-	call	clock_handler
-	add		esp, 4
-
-	; 加入延迟
-	push	10
-	call	delay
-	add		esp,4
-
-	cli
-
-	mov		esp, [p_proc_ready]  ; leave kernel stack
-
-	lea		eax, [esp + P_STACKTOP]
-	mov		dword [tss + TSS3_S_SP0], eax
-
-.re_enter:
-	dec		dword [k_reenter]
-
-	pop		gs
-	pop		fs
-	pop		es
-	pop		ds
-	popad
-	add		esp, 4
-
-	iretd
+;		inc				byte[gs:0]
+		hwint_master	0
 
 ALIGN   16
 hwint01:                ; Interrupt routine for irq 1 (keyboard)
@@ -292,19 +261,51 @@ exception:
 	add	esp, 4*2	; 让栈顶指向 EIP，堆栈中从顶向下依次是：EIP、CS、EFLAGS
 	hlt
 
+sys_call:
+	call 	save
+
+	sti
+	call	[sys_call_table + eax * 4]
+	mov		[esi + EAXREG - P_STACKBASE], eax
+	cli
+
+	ret
+
+save:
+	pushad
+	push	ds
+	push	es
+	push	fs
+	push	gs
+	mov		dx,ss
+	mov		ds,dx
+	mov		es,dx
+
+	mov		esi,esp
+
+	inc		dword [k_reenter]
+	cmp		dword [k_reenter], 0
+	jne		.1						; 中断重入后会跳转到.1，否则会顺序执行下去
+	mov		esp, StackTop
+	push	restart
+	jmp		[esi + RETADR - P_STACKBASE]
+.1:
+	; 发生了中断重入，则肯定在内核栈中了
+	push	restart_reenter
+	jmp		[esi + RETADR - P_STACKBASE]
+
 restart:
-	
 	mov		esp, [p_proc_ready]
-	mov		eax, [esp + P_LDT_SEL] 
 	lldt	[esp + P_LDT_SEL]
 	lea		eax, [esp + P_STACKTOP]
 	mov		dword [tss + TSS3_S_SP0], eax
 
+restart_reenter:
+	dec		dword [k_reenter]
 	pop		gs
 	pop		fs
 	pop		es
 	pop		ds
 	popad
 	add		esp,4
-	
 	iretd

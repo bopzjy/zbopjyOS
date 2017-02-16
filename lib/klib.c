@@ -7,15 +7,19 @@ PUBLIC char * itoa(char * str, int num){
     int i;
     *p++ = '0';
     *p++ = 'x';
-    for(i = 28;i>=0;i-=4){
-        char t = (num >> i) & 0xf;
-        if(flag || t>0){
-            flag = 1;
-            if(t>9)
-                t += 'A' - 10;
-            else
-                t += '0';
-            *p++ = t;
+    if(num==0)
+        *p++ = '0';
+    else{
+        for(i = 28;i>=0;i-=4){
+            char t = (num >> i) & 0xf;
+            if(flag || t>0){
+                flag = 1;
+                if(t>9)
+                    t += 'A' - 10;
+                else
+                    t += '0';
+                *p++ = t;
+            }
         }
     }
     *p = '\0';

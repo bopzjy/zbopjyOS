@@ -105,6 +105,9 @@ typedef struct s_tss {
 #define INT_VECTOR_IRQ0             0x20
 #define INT_VECTOR_IRQ8             0x28
 
+// 系统调用
+#define INT_VECTOR_SYS_CALL         0x90
+
 // 系统段描述符类型值
 #define DA_LDT          0x82
 #define DA_TaskGate     0x85
