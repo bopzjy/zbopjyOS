@@ -5,34 +5,15 @@
 #include "global.h"
 #include "proto.h"
 
-void schedule(){
-//    MAGIC_BP
-//    disp_int(p_proc_ready->ticks);
-/*    if(p_proc_ready->ticks<=0){
-//        MAGIC_BP
-        p_proc_ready->ticks = p_proc_ready->priority;
-        p_proc_ready++;
-        if(p_proc_ready >= proc_table + NR_TASKS)
-            p_proc_ready = proc_table;
-    }*/
+PUBLIC void init_clock(){
+    /* 初始化 8253 PIT, 该芯片每隔一定时间会输出一个信号，以便触发时钟中断*/
+    out_byte(TIMER_MODE, RATE_GENERATOR);
+    out_byte(TIMER0, (u8) (TIMER_FREQ/HZ) );
+    out_byte(TIMER0, (u8) ((TIMER_FREQ/HZ) >> 8));
 
-     PROCESS* p;                                                      
-     int  greatest_ticks = 0;                                         
-     
-     while (!greatest_ticks) {                                        
-         for (p = proc_table; p < proc_table+NR_TASKS; p++) {         
-             if (p->ticks > greatest_ticks) {                         
-                 greatest_ticks = p->ticks;
-                 p_proc_ready = p;
-             }   
-         }       
-             
-         if (!greatest_ticks) {                                       
-             for (p = proc_table; p < proc_table+NR_TASKS; p++) {     
-                 p->ticks = p->priority;                              
-             }
-         }       
-     }   
+    put_irq_handler(CLOCK_IRQ, clock_handler); /* 设定时钟中断处理程序 */  
+    enable_irq(CLOCK_IRQ);                     /* 让8259A可以接收时钟中断 */
+
 }
 
 void clock_handler(int irq){
@@ -40,10 +21,9 @@ void clock_handler(int irq){
     p_proc_ready->ticks--;
 
     if(k_reenter!=0){
-//        disp_int(k_reenter);
+        //disp_str("!");
         return;
     }
-    disp_int(p_proc_ready->ticks);
 
     if(p_proc_ready->ticks > 0)
         return;

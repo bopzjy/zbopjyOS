@@ -20,6 +20,9 @@ EXTERN u32          k_reenter;
 // 时钟中断计数器
 EXTERN int          ticks;
 
+// 当前终端
+EXTERN int          nr_current_console;
+
 // 进程表
 extern PROCESS      proc_table[];
 
@@ -30,3 +33,7 @@ extern TASK         task_table[];
 
 // 中断处理程序表
 extern irq_handler irq_table[];     // global.c
+
+// 终端表
+extern TTY tty_table[];
+extern CONSOLE console_table[];

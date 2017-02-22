@@ -31,7 +31,7 @@
 00000000000i[      ]   SB16 support: no
 00000000000i[      ]   USB support: no
 00000000000i[      ]   VGA extension support: vbe
-00000000000i[MEM0  ] allocated memory at 0x7f20cb17b010. after alignment, vector=0x7f20cb17c000
+00000000000i[MEM0  ] allocated memory at 0x7f0d02af8010. after alignment, vector=0x7f0d02af9000
 00000000000i[MEM0  ] 32.00MB
 00000000000i[MEM0  ] mem block size = 0x00100000, blocks=32
 00000000000i[MEM0  ] rom at 0xfffe0000/131072 ('/usr/local/share/bochs/BIOS-bochs-latest')
@@ -41,7 +41,7 @@
 00000000000i[DEV   ] PIIX3 PCI-to-ISA bridge present at device 1, function 0
 00000000000i[PLUGIN] init_dev of 'cmos' plugin device by virtual method
 00000000000i[CMOS  ] Using local time for initial clock
-00000000000i[CMOS  ] Setting initial clock to: Thu Feb 16 20:21:27 2017 (time0=1487247687)
+00000000000i[CMOS  ] Setting initial clock to: Tue Feb 21 09:19:33 2017 (time0=1487639973)
 00000000000i[PLUGIN] init_dev of 'dma' plugin device by virtual method
 00000000000i[DMA   ] channel 4 used by cascade
 00000000000i[PLUGIN] init_dev of 'pic' plugin device by virtual method
@@ -75,7 +75,8 @@
 00000000000i[PLUGIN] init_dev of 'unmapped' plugin device by virtual method
 00000000000i[PLUGIN] init_dev of 'biosdev' plugin device by virtual method
 00000000000i[PLUGIN] init_dev of 'speaker' plugin device by virtual method
-00000000000i[PCSPK ] Using /dev/console for output
+00000000000e[PCSPK ] Failed to open /dev/console: Permission denied
+00000000000e[PCSPK ] Deactivating beep on console
 00000000000i[PLUGIN] init_dev of 'extfpuirq' plugin device by virtual method
 00000000000i[PLUGIN] init_dev of 'parallel' plugin device by virtual method
 00000000000i[PAR   ] parallel port 1 at 0x0378 irq 7
@@ -132,46 +133,24 @@
 00000000000i[PLUGIN] reset of 'serial' plugin device by virtual method
 00000000000i[PLUGIN] reset of 'iodebug' plugin device by virtual method
 00000000000i[      ] set SIGINT handler to bx_debug_ctrlc_handler
-00000004661i[BIOS  ] $Revision: 12579 $ $Date: 2014-12-26 11:31:39 +0100 (Fr, 26. Dez 2014) $
-00000321073i[KBD   ] reset-disable command received
-00000323804i[BIOS  ] Starting rombios32
-00000324242i[BIOS  ] Shutdown flag 0
-00000324825i[BIOS  ] ram_size=0x02000000
-00000325246i[BIOS  ] ram_end=32MB
-00000365766i[BIOS  ] Found 1 cpu(s)
-00000379970i[BIOS  ] bios_table_addr: 0x000fa498 end=0x000fcc00
-00000707765i[PCI   ] i440FX PMC write to PAM register 59 (TLB Flush)
-00001035694i[P2ISA ] PCI IRQ routing: PIRQA# set to 0x0b
-00001035713i[P2ISA ] PCI IRQ routing: PIRQB# set to 0x09
-00001035732i[P2ISA ] PCI IRQ routing: PIRQC# set to 0x0b
-00001035751i[P2ISA ] PCI IRQ routing: PIRQD# set to 0x09
-00001035761i[P2ISA ] write: ELCR2 = 0x0a
-00001036531i[BIOS  ] PIIX3/PIIX4 init: elcr=00 0a
-00001044212i[BIOS  ] PCI: bus=0 devfn=0x00: vendor_id=0x8086 device_id=0x1237 class=0x0600
-00001046491i[BIOS  ] PCI: bus=0 devfn=0x08: vendor_id=0x8086 device_id=0x7000 class=0x0601
-00001048609i[BIOS  ] PCI: bus=0 devfn=0x09: vendor_id=0x8086 device_id=0x7010 class=0x0101
-00001048834i[PIDE  ] new BM-DMA address: 0xc000
-00001049450i[BIOS  ] region 4: 0x0000c000
-00001051484i[BIOS  ] PCI: bus=0 devfn=0x0b: vendor_id=0x8086 device_id=0x7113 class=0x0680
-00001051716i[ACPI  ] new irq line = 11
-00001051728i[ACPI  ] new irq line = 9
-00001051753i[ACPI  ] new PM base address: 0xb000
-00001051767i[ACPI  ] new SM base address: 0xb100
-00001051795i[PCI   ] setting SMRAM control register to 0x4a
-00001215888i[CPU0  ] Enter to System Management Mode
-00001215899i[CPU0  ] RSM: Resuming from System Management Mode
-00001379920i[PCI   ] setting SMRAM control register to 0x0a
-00001394786i[BIOS  ] MP table addr=0x000fa570 MPC table addr=0x000fa4a0 size=0xc8
-00001396608i[BIOS  ] SMBIOS table addr=0x000fa580
-00001398789i[BIOS  ] ACPI tables: RSDP addr=0x000fa6a0 ACPI DATA addr=0x01ff0000 size=0xf72
-00001402001i[BIOS  ] Firmware waking vector 0x1ff00cc
-00001403796i[PCI   ] i440FX PMC write to PAM register 59 (TLB Flush)
-00001404519i[BIOS  ] bios_table_cur_addr: 0x000fa6c4
-00001532136i[VBIOS ] VGABios $Id: vgabios.c,v 1.76 2013/02/10 08:07:03 vruppert Exp $
-00001532207i[BXVGA ] VBE known Display Interface b0c0
-00001532239i[BXVGA ] VBE known Display Interface b0c5
-00001535164i[VBIOS ] VBE Bios $Id: vbe.c,v 1.65 2014/07/08 18:02:25 vruppert Exp $
-00004192652i[XGUI  ] charmap update. Font Height is 16
-00014040192i[BIOS  ] Booting from 0000:7c00
-00339760919e[CPU0  ] write_virtual_checks(): write beyond limit, r/w
-00339772422i[CPU0  ] WARNING: HLT instruction with IF=0!
+00000000000i[      ] dbg: Quit
+00000000000i[CPU0  ] CPU is in real mode (active)
+00000000000i[CPU0  ] CS.mode = 16 bit
+00000000000i[CPU0  ] SS.mode = 16 bit
+00000000000i[CPU0  ] EFER   = 0x00000000
+00000000000i[CPU0  ] | EAX=00000000  EBX=00000000  ECX=00000000  EDX=00000000
+00000000000i[CPU0  ] | ESP=00000000  EBP=00000000  ESI=00000000  EDI=00000000
+00000000000i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df if tf sf zf af pf cf
+00000000000i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
+00000000000i[CPU0  ] |  CS:f000( 1e00| 0|  0) ffff0000 0000ffff 0 0
+00000000000i[CPU0  ] |  DS:0000( 0000| 0|  0) 00000000 0000ffff 0 0
+00000000000i[CPU0  ] |  SS:0000( 0000| 0|  0) 00000000 0000ffff 0 0
+00000000000i[CPU0  ] |  ES:0000( 0000| 0|  0) 00000000 0000ffff 0 0
+00000000000i[CPU0  ] |  FS:0000( 0000| 0|  0) 00000000 0000ffff 0 0
+00000000000i[CPU0  ] |  GS:0000( 0000| 0|  0) 00000000 0000ffff 0 0
+00000000000i[CPU0  ] | EIP=0000fff0 (0000fff0)
+00000000000i[CPU0  ] | CR0=0x60000010 CR2=0x00000000
+00000000000i[CPU0  ] | CR3=0x00000000 CR4=0x00000000
+00000000000i[CMOS  ] Last time is 1487639973 (Tue Feb 21 09:19:33 2017)
+00000000000i[XGUI  ] Exit
+00000000000i[SIM   ] quit_sim called with exit code 0

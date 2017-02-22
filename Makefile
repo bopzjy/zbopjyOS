@@ -22,7 +22,8 @@ DASMFLAGS	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 #target
 OSBOOT		= boot/boot.bin boot/loader.bin
 OSKERNEL	= kernel.bin
-OBJS		= kernel/global.o kernel/kernel.o kernel/start.o kernel/protect.o lib/kliba.o lib/string.o lib/klib.o kernel/i8259.o kernel/main.o kernel/clock.o kernel/proc.o lib/syscall.o
+OBJS		= kernel/global.o kernel/kernel.o kernel/start.o kernel/protect.o lib/kliba.o lib/string.o lib/klib.o kernel/i8259.o kernel/main.o \
+			  kernel/clock.o kernel/proc.o lib/syscall.o kernel/keyboard.o kernel/tty.o
 DASMOUTPUT	= kernel.bin.asm
 
 # all phony targets
@@ -101,9 +102,21 @@ kernel/protect.o: kernel/protect.c include/const.h include/type.h \
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/global.o: kernel/global.c include/type.h include/const.h \
-	 include/protect.h include/proto.h include/proc.h include/global.h
+	 include/protect.h include/proto.h include/proc.h include/global.h \
+	 include/tty.h include/console.h
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/proc.o: kernel/proc.c include/type.h include/const.h include/string.h \
 	include/protect.h include/proto.h include/proc.h include/global.h
+	$(CC) $(CFLAGS) -o $@ $<
 
+kernel/keyboard.o: kernel/keyboard.c include/type.h include/const.h \
+	include/protect.h include/proto.h include/string.h include/proc.h \
+	include/global.h include/keyboard.h include/keymap.h include/tty.h \
+	include/console.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/tty.o: kernel/tty.c include/type.h include/const.h include/protect.h \
+	include/proto.h include/string.h include/proc.h include/global.h \
+	include/keyboard.h include/tty.h include/console.h
+	$(CC) $(CFLAGS) -o $@ $<
