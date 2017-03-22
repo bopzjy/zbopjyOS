@@ -1,9 +1,11 @@
 #include "const.h"
 #include "type.h"
 #include "protect.h"
-#include "proto.h"
 #include "proc.h"
 #include "string.h"
+#include "tty.h"
+#include "console.h"
+#include "proto.h"
 #include "global.h"
 
 /* 本文件内函数声明 */                                               
@@ -195,7 +197,7 @@ PUBLIC void init_prot()
     // 初始化GDT中的LDT的描述符
     int i, index_ldt = INDEX_LDT_FIRST;
     PROCESS* p_proc = proc_table;
-    for(i = 0; i<NR_TASKS; i++){
+    for(i = 0; i<NR_TASKS + NR_PROCS; i++){
         init_descriptor(&gdt[index_ldt],
             vir2phys(seg2phys(SELECTOR_KERNEL_DS),p_proc->ldts),
             LDT_SIZE * sizeof(DESCRIPTOR) - 1,

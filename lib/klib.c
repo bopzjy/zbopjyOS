@@ -1,5 +1,7 @@
 #include "const.h"
 #include "type.h"
+#include "tty.h"
+#include "console.h"
 #include "proto.h"
 PUBLIC char * itoa(char * str, int num){
     char *p = str;

@@ -1,6 +1,15 @@
 #ifndef _OS_CONSOLE_H_
 #define _OS_CONSOLE_H_
 
+/* 0000 0111 白底黑字 */
+#define DEFAULT_CHAR_COLOR  0x07
+
+#define SCR_UP  1   /* scroll forward */
+#define SCR_DN  -1  /* scroll backward */
+ 
+#define SCREEN_SIZE     (80 * 25)
+#define SCREEN_WIDTH        80
+
 typedef struct s_console{
     unsigned int    current_start_addr;     // 当前显示到什么位置
     unsigned int    original_addr;          // 当前控制台对应显存位置

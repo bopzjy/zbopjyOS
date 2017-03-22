@@ -3,18 +3,21 @@
 #include "type.h"
 #include "const.h"
 #include "protect.h"
-#include "proto.h"
 #include "proc.h"
 #include "tty.h"
 #include "console.h"
+#include "proto.h"
 #include "global.h"
 
-PUBLIC  PROCESS         proc_table[NR_TASKS];
+PUBLIC  PROCESS         proc_table[NR_TASKS + NR_PROCS];
                                                                        
 PUBLIC  char            task_stack[STACK_SIZE_TOTAL];
 
 PUBLIC TASK task_table[NR_TASKS] = {
-    { task_tty, STACK_SIZE_TTY, "tty"},
+    { task_tty, STACK_SIZE_TTY, "tty"}
+};
+
+PUBLIC TASK user_proc_table[NR_PROCS] = {
     { TestA, STACK_SIZE_TESTA, "TestA" },                        
     { TestB, STACK_SIZE_TESTB, "TestB" },                        
     { TestC, STACK_SIZE_TESTC, "TestC" }                        
@@ -26,6 +29,6 @@ PUBLIC system_call sys_call_table[NR_SYS_CALL] = {
     sys_get_ticks
 };
 
-PUBLIC TTY      tty_table[NR_CONSOLE];
-PUBLIC CONSOLE  console_table[NR_CONSOLE];
+PUBLIC TTY      tty_table[NR_CONSOLES];
+PUBLIC CONSOLE  console_table[NR_CONSOLES];
 PUBLIC int nr_current_console;

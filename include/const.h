@@ -26,23 +26,26 @@
 #define RPL_TASK    SA_RPL1                                    
 #define RPL_USER    SA_RPL3 
 
- /* 8253/8254 PIT (Programmable Interval Timer) */                    
- #define TIMER0         0x40 /* I/O port for timer channel 0 */       
- #define TIMER_MODE     0x43 /* I/O port for timer mode control */    
- #define RATE_GENERATOR 0x34 /* 00-11-010-0 :                         
+/* 8253/8254 PIT (Programmable Interval Timer) */                    
+#define TIMER0         0x40 /* I/O port for timer channel 0 */       
+#define TIMER_MODE     0x43 /* I/O port for timer mode control */    
+#define RATE_GENERATOR 0x34 /* 00-11-010-0 :                         
                               * Counter0 - LSB then MSB - rate generator - binary 
                               */                                                  
- #define TIMER_FREQ     1193182L/* clock frequency for timer in PC and AT */
- #define HZ             100  /* clock freq (software settable on IBM-PC) */
+#define TIMER_FREQ     1193182L/* clock frequency for timer in PC and AT */
+#define HZ             100  /* clock freq (software settable on IBM-PC) */
 
- /* AT keyboard */
- /* 8042 ports */
- #define KB_DATA     0x60    /* I/O port for keyboard data
+/* AT keyboard */
+/* 8042 ports */
+#define KB_DATA     0x60    /* I/O port for keyboard data
                      Read : Read Output Buffer
                      Write: Write Input Buffer(8042 Data&8048 Command) */
-#define KB_CMD       0x64    /* I/O port for keyboard command
+#define KB_CMD      0x64    /* I/O port for keyboard command
                      Read : Read Status Register
                      Write: Write Input Buffer(8042 Command) */
+#define LED_CODE    0xED
+#define KB_ACK      0xFA
+
 
 /* VGA */                                                                                 
 #define CRTC_ADDR_REG   0x3D4   /* CRT Controller Registers - Addr Register */            
@@ -55,7 +58,7 @@
 #define V_MEM_SIZE  0x8000  /* 32K: B8000H -> BFFFFH */ 
 
 /* TTY */
-#define NR_CONSOLE  3
+#define NR_CONSOLES  3
 
 
 /* Hardware interrupts */

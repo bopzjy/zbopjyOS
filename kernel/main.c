@@ -1,10 +1,11 @@
 #include "const.h"
 #include "type.h"
 #include "protect.h"
-#include "proto.h"
 #include "proc.h"
 #include "string.h"
 #include "tty.h"
+#include "console.h"
+#include "proto.h"
 #include "global.h"
 
 PUBLIC int kernel_main(){
@@ -15,27 +16,41 @@ PUBLIC int kernel_main(){
     PROCESS* p_proc = proc_table;
     TASK* p_task = task_table;
     char* off_stack = task_stack;
+    u8  privilege;
+    u8  rpl;
+    int eflags;
+    for(i = 0; i<NR_TASKS + NR_PROCS; i++){
+        if(i < NR_TASKS){
+            p_task      = task_table + i;
+            privilege   = PRIVILEGE_TASK;
+            rpl         = RPL_TASK;
+            eflags       = 0x1202;           // IF=1, IOPL=1, bit 2 is always 1
+        }else {
+            p_task      = user_proc_table + (i - NR_TASKS);
+            privilege   = PRIVILEGE_USER;
+            rpl         = RPL_USER;
+            eflags      = 0x2202;
+        }
 
-    for(i = 0; i<NR_TASKS; i++){
         off_stack += p_task->stacksize;
 
         p_proc->pid = i;
         strcpy(p_proc->p_name, p_task->name);
         p_proc->ldt_sel = selector_ldt;
         memcpy(&p_proc->ldts[0], &gdt[SELECTOR_KERNEL_CS>>3], sizeof(DESCRIPTOR));
-        p_proc->ldts[0].attr1 = DA_C | PRIVILEGE_TASK << 5; // change the DPL
+        p_proc->ldts[0].attr1 = DA_C | privilege << 5; // change the DPL
         memcpy(&p_proc->ldts[1], &gdt[SELECTOR_KERNEL_DS>>3], sizeof(DESCRIPTOR));
-        p_proc->ldts[1].attr1 = DA_DRW | PRIVILEGE_TASK << 5;   // change the DPL
+        p_proc->ldts[1].attr1 = DA_DRW | privilege << 5;   // change the DPL
     
-        p_proc->regs.cs = (0 & SA_RPL_MASK & SA_TI_MASK) | SA_TIL | RPL_TASK;
-        p_proc->regs.ds = (8 & SA_RPL_MASK & SA_TI_MASK) | SA_TIL | RPL_TASK;
-        p_proc->regs.es = (8 & SA_RPL_MASK & SA_TI_MASK) | SA_TIL | RPL_TASK;
-        p_proc->regs.fs = (8 & SA_RPL_MASK & SA_TI_MASK) | SA_TIL | RPL_TASK;
-        p_proc->regs.ss = (8 & SA_RPL_MASK & SA_TI_MASK) | SA_TIL | RPL_TASK;
-        p_proc->regs.gs = (SELECTOR_KERNEL_GS & SA_RPL_MASK) | RPL_TASK; 
+        p_proc->regs.cs = (0 & SA_RPL_MASK & SA_TI_MASK) | SA_TIL | rpl;
+        p_proc->regs.ds = (8 & SA_RPL_MASK & SA_TI_MASK) | SA_TIL | rpl;
+        p_proc->regs.es = (8 & SA_RPL_MASK & SA_TI_MASK) | SA_TIL | rpl;
+        p_proc->regs.fs = (8 & SA_RPL_MASK & SA_TI_MASK) | SA_TIL | rpl;
+        p_proc->regs.ss = (8 & SA_RPL_MASK & SA_TI_MASK) | SA_TIL | rpl;
+        p_proc->regs.gs = (SELECTOR_KERNEL_GS & SA_RPL_MASK) | rpl; 
         p_proc->regs.eip= (u32) p_task->initial_eip;
         p_proc->regs.esp= (u32) off_stack; 
-        p_proc->regs.eflags = 0x1202;   // IF=1, IOPL=1, bit 2 is always 1.
+        p_proc->regs.eflags = eflags;
 
         p_proc++;
         p_task++;
